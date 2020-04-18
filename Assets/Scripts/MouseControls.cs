@@ -11,7 +11,8 @@ public class MouseControls : MonoBehaviour
 
     private Camera camera;
 
-    private Vector3 xyplane = new Vector3(1f, 0f, 1f);
+    float rotationSpeed = 10f;
+    float heldObjectHeight = 0f;
 
     void Start()
     {
@@ -27,6 +28,15 @@ public class MouseControls : MonoBehaviour
         else
         {
             MoveObject();
+
+            if(Input.GetMouseButton(1))
+            {
+                float XaxisRotation = Input.GetAxis("Mouse X") * rotationSpeed;
+                float YaxisRotation = Input.GetAxis("Mouse Y") * rotationSpeed;
+
+                heldObject.transform.Rotate(Vector3.down, XaxisRotation);
+                heldObject.transform.Rotate(Vector3.right, YaxisRotation);
+            }
         }
     }
 
@@ -39,12 +49,6 @@ public class MouseControls : MonoBehaviour
             if(Input.GetMouseButtonDown(0))
             {
                 hitInfo.collider.GetComponent<Rigidbody>().isKinematic = true;
-
-                Vector3 newPosition = camera.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, holdDistance));
-                newPosition += camera.transform.forward * holdDistance;
-
-                hitInfo.collider.transform.position = Vector3.ProjectOnPlane(newPosition, Vector3.up);
-
                 heldObject = hitInfo.collider.gameObject;
                 isHoldingSomething = true;
             }
@@ -57,21 +61,25 @@ public class MouseControls : MonoBehaviour
         Plane plane = new Plane(Vector3.up, Vector3.up * planeY); // ground plane
 
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-        float distance; // the distance from the ray origin to the ray intersection of the plane
-        if(plane.Raycast(ray, out distance))
+        if (!Input.GetMouseButton(1))
         {
-            heldObject.transform.position = ray.GetPoint(distance) - camera.transform.forward * 1.3f; // distance along the ray
-        }
-
-        if(Input.GetMouseButtonUp(0))
-        {
-            if (!heldObject.GetComponent<Piece>().IsMounted)
+            float distance; // the distance from the ray origin to the ray intersection of the plane
+            if(plane.Raycast(ray, out distance))
             {
-                heldObject.GetComponent<Rigidbody>().isKinematic = false;
+                heldObjectHeight += Input.GetAxis("Mouse ScrollWheel");
+                heldObject.transform.position = ray.GetPoint(distance) - camera.transform.forward * 1.3f + Vector3.up * heldObjectHeight; // distance along the ray
             }
-            heldObject = null;
-            isHoldingSomething = false;
+
+            if(Input.GetMouseButtonDown(0))
+            {
+                if (!heldObject.GetComponent<Piece>().IsMounted)
+                {
+                    heldObject.GetComponent<Rigidbody>().isKinematic = false;
+                }
+                heldObject = null;
+                isHoldingSomething = false;
+                heldObjectHeight = 0f;
+            }
         }
     }
 }
