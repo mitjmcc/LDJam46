@@ -3,21 +3,27 @@
 public class PieceMount : MonoBehaviour
 {
     public int pieceID;
+    private bool otherPieceConnected = false;
+    private Piece thisPiece;
 
-    private bool pieceConnected = false;
+    void Awake()
+    {
+        thisPiece = this.GetComponent<Piece>();
+    }
 
     void OnTriggerEnter(Collider thing)
     {
-        var piece = thing.GetComponent<Piece>();
-        if (piece == null) return;
-        if (!pieceConnected && piece.pieceID == pieceID)
+        var otherPiece = thing.GetComponent<Piece>();
+        if (otherPiece == null || !thisPiece.IsMounted) return;
+        if (!otherPieceConnected && otherPiece.pieceID == pieceID)
         {
             print("Hey that's the right piece");
-            pieceConnected = true;
-            piece.transform.SetParent(this.transform);
-            piece.transform.localPosition = Vector3.up;
-            piece.GetComponent<Rigidbody>().isKinematic = true;
-            piece.gameObject.layer = 0;
+            otherPieceConnected = true;
+            otherPiece.IsMounted = true;
+            otherPiece.transform.SetParent(this.transform);
+            otherPiece.transform.localPosition = Vector3.up;
+            otherPiece.GetComponent<Rigidbody>().isKinematic = true;
+            otherPiece.gameObject.layer = 0;
         }
     }
 }
