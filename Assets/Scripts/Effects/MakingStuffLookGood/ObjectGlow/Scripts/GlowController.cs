@@ -66,14 +66,14 @@ public class GlowController : MonoBehaviour
 		_commandBuffer.SetRenderTarget(_prePassRenderTexID);
 		_commandBuffer.ClearRenderTarget(true, true, Color.clear);
 
-		print(string.Format("glowable obj count: {0}", _glowableObjects.Count));
+		// print(string.Format("glowable obj count: {0}", _glowableObjects.Count));
 		for (int i = 0; i < _glowableObjects.Count; i++)
 		{
 			_commandBuffer.SetGlobalColor(_glowColorID, _glowableObjects[i].CurrentColor);
 
 			for (int j = 0; j < _glowableObjects[i].Renderers.Length; j++)
 			{
-				print(string.Format("{0} length: {1}", _glowableObjects[i].name, _glowableObjects[i].Renderers.Length));
+				// print(string.Format("{0} length: {1}", _glowableObjects[i].name, _glowableObjects[i].Renderers.Length));
 				_commandBuffer.DrawRenderer(_glowableObjects[i].Renderers[j], _glowMat);
 			}
 		}
@@ -95,7 +95,7 @@ public class GlowController : MonoBehaviour
 	/// <summary>
 	/// Rebuild the Command Buffer each frame to account for changes in color.
 	/// This could be improved to only rebuild when necessary when colors are changing.
-	/// 
+	///
 	/// Could be further optimized to not include objects which are currently black and not
 	/// affect thing the glow image.
 	/// </summary>

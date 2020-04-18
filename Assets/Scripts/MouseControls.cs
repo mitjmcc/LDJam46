@@ -11,6 +11,8 @@ public class MouseControls : MonoBehaviour
 
     private Camera camera;
 
+    private Vector3 xyplane = new Vector3(1f, 0f, 1f);
+
     void Start()
     {
         camera = Camera.main;
@@ -40,7 +42,8 @@ public class MouseControls : MonoBehaviour
 
                 Vector3 newPosition = camera.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, holdDistance));
                 newPosition += camera.transform.forward * holdDistance;
-                hitInfo.collider.transform.position = newPosition;
+
+                hitInfo.collider.transform.position = Vector3.ProjectOnPlane(newPosition, Vector3.up);
 
                 heldObject = hitInfo.collider.gameObject;
                 isHoldingSomething = true;
@@ -50,13 +53,23 @@ public class MouseControls : MonoBehaviour
 
     private void MoveObject()
     {
-        Vector3 newPosition = camera.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, holdDistance));
-        // newPosition += camera.transform.forward * holdDistance;
-        heldObject.transform.position = newPosition;
+        float planeY = 0;
+        Plane plane = new Plane(Vector3.up, Vector3.up * planeY); // ground plane
+
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+        float distance; // the distance from the ray origin to the ray intersection of the plane
+        if(plane.Raycast(ray, out distance))
+        {
+            heldObject.transform.position = ray.GetPoint(distance) - camera.transform.forward * 1.3f; // distance along the ray
+        }
 
         if(Input.GetMouseButtonUp(0))
         {
-            heldObject.GetComponent<Rigidbody>().isKinematic = false;
+            if (!heldObject.GetComponent<Piece>().IsMounted)
+            {
+                heldObject.GetComponent<Rigidbody>().isKinematic = false;
+            }
             heldObject = null;
             isHoldingSomething = false;
         }

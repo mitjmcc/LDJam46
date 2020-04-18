@@ -12,7 +12,7 @@ namespace kTools.Decals
         // -------------------------------------------------- //
         //                   GEOMETRY UTILS                   //
         // -------------------------------------------------- //
-        
+
         /// <summary>
         /// Get a direction vector from a Decal to the nearest Collider face.
         /// </summary>
@@ -78,7 +78,8 @@ namespace kTools.Decals
             #if UNITY_EDITOR
                 UnityEngine.Object.DestroyImmediate(obj);
             #else
-                UnityEngine.Destroy(obj);
+                // UnityEngine.Destroy(obj);
+                UnityEngine.Object.Destroy(obj);
             #endif
         }
 

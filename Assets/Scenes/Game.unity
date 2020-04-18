@@ -796,6 +796,7 @@ GameObject:
   - component: {fileID: 4816142790836919480}
   - component: {fileID: 4046158216198232234}
   - component: {fileID: 4046158216198232233}
+  - component: {fileID: 4046158216198232238}
   - component: {fileID: 4046158216198232236}
   - component: {fileID: 4046158216198232235}
   - component: {fileID: 4046158216198232237}
@@ -877,6 +878,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   GlowColor: {r: 0.72156864, g: 0.72156864, b: 0.72156864, a: 0}
   LerpFactor: 10
+--- !u!135 &4046158216198232238
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4046158216198232232}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.4
+  m_Center: {x: 0, y: 0, z: 2.03}
 --- !u!23 &4816142790836919480
 MeshRenderer:
   m_ObjectHideFlags: 0

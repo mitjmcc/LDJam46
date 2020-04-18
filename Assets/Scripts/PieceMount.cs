@@ -17,7 +17,6 @@ public class PieceMount : MonoBehaviour
         if (otherPiece == null || !thisPiece.IsMounted) return;
         if (!otherPieceConnected && otherPiece.pieceID == pieceID)
         {
-            print("Hey that's the right piece");
             otherPieceConnected = true;
             otherPiece.IsMounted = true;
             otherPiece.transform.SetParent(this.transform);
