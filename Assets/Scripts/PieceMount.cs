@@ -23,6 +23,7 @@ public class PieceMount : MonoBehaviour
             otherPiece.transform.localPosition = Vector3.up;
             otherPiece.GetComponent<Rigidbody>().isKinematic = true;
             otherPiece.gameObject.layer = 0;
+            PuzzleChecker.Instance.CheckPuzzleComplete();
         }
     }
 }
