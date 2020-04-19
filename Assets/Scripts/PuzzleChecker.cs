@@ -63,12 +63,13 @@ public class PuzzleChecker : MonoBehaviour
             if (completePieces == pieces.Count)
             {
                 // print("Puzzle Complete!");
-                if (currentScene < SceneManager.sceneCount + 1) // Only going to be levels with "#.scene" and the main menu scene
+                if (currentScene < SceneManager.sceneCountInBuildSettings - 1) // Only going to be levels with "#.scene" and the main menu scene
                 {
                     SceneManager.LoadScene((currentScene + 1).ToString());
                 }
                 else
                 {
+                    print("Back to menu, scene count: " + SceneManager.sceneCount + " current scene: " + currentScene);
                     SceneManager.LoadScene("MainMenu");
                 }
             }
