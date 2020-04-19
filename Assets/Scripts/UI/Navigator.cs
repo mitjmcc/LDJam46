@@ -1,57 +1,60 @@
-﻿using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.EventSystems;
-using GGJ2020.Util;
-
-public static class Navigator
+﻿namespace HomeTakeover.UI
 {
-    public static void Navigate(CustomInput.UserInput direction, GameObject defaultGameObject)
+    using UnityEngine;
+    using UnityEngine.UI;
+    using UnityEngine.EventSystems;
+
+    public static class Navigator
     {
-        GameObject next = EventSystem.current.currentSelectedGameObject;
-        if (next == null)
+        public static void Navigate(string direction, GameObject defaultGameObject)
         {
-            if (defaultGameObject != null) EventSystem.current.SetSelectedGameObject(defaultGameObject);
-            return;
+            GameObject next = EventSystem.current.currentSelectedGameObject;
+            if (next == null)
+            {
+                if (defaultGameObject != null) EventSystem.current.SetSelectedGameObject(defaultGameObject);
+                return;
+            }
+
+            bool nextIsValid = false;
+            while (!nextIsValid)
+            {
+                // Don't switch on strings in non game jam settings boyo
+                switch (direction)
+                {
+                    case "UI_Up":
+                        if (EventSystem.current.currentSelectedGameObject.GetComponent<Selectable>().FindSelectableOnUp() != null)
+                            next = EventSystem.current.currentSelectedGameObject.GetComponent<Selectable>().FindSelectableOnUp().gameObject;
+                        else next = null;
+                        break;
+                    case "UI_Down":
+                        if (EventSystem.current.currentSelectedGameObject.GetComponent<Selectable>().FindSelectableOnDown() != null)
+                            next = EventSystem.current.currentSelectedGameObject.GetComponent<Selectable>().FindSelectableOnDown().gameObject;
+                        else next = null;
+                        break;
+                    case "UI_Left":
+                        if (EventSystem.current.currentSelectedGameObject.GetComponent<Selectable>().FindSelectableOnLeft() != null)
+                            next = EventSystem.current.currentSelectedGameObject.GetComponent<Selectable>().FindSelectableOnLeft().gameObject;
+                        else next = null;
+                        break;
+                    case "UI_Right":
+                        if (EventSystem.current.currentSelectedGameObject.GetComponent<Selectable>().FindSelectableOnRight() != null)
+                            next = EventSystem.current.currentSelectedGameObject.GetComponent<Selectable>().FindSelectableOnRight().gameObject;
+                        else next = null;
+                        break;
+                }
+                if (next != null && next.activeSelf)
+                {
+                    EventSystem.current.SetSelectedGameObject(next);
+                    nextIsValid = next.GetComponent<Selectable>().interactable;
+                }
+                else nextIsValid = true;
+            }
         }
 
-        bool nextIsValid = false;
-        while (!nextIsValid)
+        public static void CallSubmit()
         {
-            switch (direction)
-            {
-                case CustomInput.UserInput.Up:
-                    if (EventSystem.current.currentSelectedGameObject.GetComponent<Selectable>().FindSelectableOnUp() != null)
-                        next = EventSystem.current.currentSelectedGameObject.GetComponent<Selectable>().FindSelectableOnUp().gameObject;
-                    else next = null;
-                    break;
-                case CustomInput.UserInput.Down:
-                    if (EventSystem.current.currentSelectedGameObject.GetComponent<Selectable>().FindSelectableOnDown() != null)
-                        next = EventSystem.current.currentSelectedGameObject.GetComponent<Selectable>().FindSelectableOnDown().gameObject;
-                    else next = null;
-                    break;
-                case CustomInput.UserInput.Left:
-                    if (EventSystem.current.currentSelectedGameObject.GetComponent<Selectable>().FindSelectableOnLeft() != null)
-                        next = EventSystem.current.currentSelectedGameObject.GetComponent<Selectable>().FindSelectableOnLeft().gameObject;
-                    else next = null;
-                    break;
-                case CustomInput.UserInput.Right:
-                    if (EventSystem.current.currentSelectedGameObject.GetComponent<Selectable>().FindSelectableOnRight() != null)
-                        next = EventSystem.current.currentSelectedGameObject.GetComponent<Selectable>().FindSelectableOnRight().gameObject;
-                    else next = null;
-                    break;
-            }
-            if (next != null)
-            {
-                EventSystem.current.SetSelectedGameObject(next);
-                nextIsValid = next.GetComponent<Selectable>().interactable;
-            }
-            else nextIsValid = true;
+            var pointer = new PointerEventData(EventSystem.current);
+            ExecuteEvents.Execute(EventSystem.current.currentSelectedGameObject, pointer, ExecuteEvents.submitHandler);
         }
-    }
-
-    public static void CallSubmit()
-    {
-        var pointer = new PointerEventData(EventSystem.current);
-        ExecuteEvents.Execute(EventSystem.current.currentSelectedGameObject, pointer, ExecuteEvents.submitHandler);
     }
 }

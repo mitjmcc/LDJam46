@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using Luminosity.IO;
 
 public class MouseControls : MonoBehaviour
 {
@@ -31,8 +32,8 @@ public class MouseControls : MonoBehaviour
 
             if(Input.GetMouseButton(1))
             {
-                float XaxisRotation = Input.GetAxis("Mouse X") * rotationSpeed;
-                float YaxisRotation = Input.GetAxis("Mouse Y") * rotationSpeed;
+                float XaxisRotation = InputManager.GetAxis("Mouse X") * rotationSpeed;
+                float YaxisRotation = InputManager.GetAxis("Mouse Y") * rotationSpeed;
 
                 heldObject.transform.Rotate(Vector3.down, XaxisRotation);
                 heldObject.transform.Rotate(Vector3.right, YaxisRotation);
@@ -66,7 +67,7 @@ public class MouseControls : MonoBehaviour
             float distance; // the distance from the ray origin to the ray intersection of the plane
             if(plane.Raycast(ray, out distance))
             {
-                heldObjectHeight += Input.GetAxis("Mouse ScrollWheel");
+                heldObjectHeight += InputManager.GetAxis("Mouse ScrollWheel");
                 heldObject.transform.position = ray.GetPoint(distance) - camera.transform.forward * 1.3f + Vector3.up * heldObjectHeight; // distance along the ray
             }
 
