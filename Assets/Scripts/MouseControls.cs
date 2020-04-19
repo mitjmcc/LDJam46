@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using Luminosity.IO;
+using UnityEngine.SceneManagement;
 
 public class MouseControls : MonoBehaviour
 {
@@ -38,6 +39,11 @@ public class MouseControls : MonoBehaviour
                 heldObject.transform.Rotate(Vector3.down, XaxisRotation);
                 heldObject.transform.Rotate(Vector3.right, YaxisRotation);
             }
+        }
+
+        if (InputManager.GetKeyDown(KeyCode.R))
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
     }
 
