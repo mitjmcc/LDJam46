@@ -8,13 +8,46 @@ public class MouseControls : MonoBehaviour
     public float holdDistance = 2.0f;
     public LayerMask pickupMask;
 
-    private bool isHoldingSomething = false;
+    public bool isHoldingSomething = false;
     private GameObject heldObject;
 
     private Camera camera;
 
     float rotationSpeed = 10f;
-    float heldObjectHeight = 0f;
+    float heldObjectHeight = 0.01f;
+
+    private static MouseControls _instance;
+    private static object m_Lock = new object();
+
+    public static MouseControls Instance
+    {
+        get
+        {
+
+            lock (m_Lock)
+            {
+                if (_instance == null)
+                {
+                    // Search for existing instance.
+                    _instance = (MouseControls)FindObjectOfType(typeof(MouseControls));
+
+                    // Create new instance if one doesn't already exist.
+                    if (_instance == null)
+                    {
+                        // Need to create a new GameObject to attach the singleton to.
+                        var singletonObject = new GameObject();
+                        _instance = singletonObject.AddComponent<MouseControls>();
+                        singletonObject.name = typeof(MouseControls).ToString() + " (Singleton)";
+
+                        // Make instance persistent.
+                        DontDestroyOnLoad(singletonObject);
+                    }
+                }
+
+                return _instance;
+            }
+        }
+    }
 
     void Start()
     {
@@ -41,7 +74,7 @@ public class MouseControls : MonoBehaviour
             }
         }
 
-        if (InputManager.GetKeyDown(KeyCode.R))
+        if (InputManager.GetKeyDown(KeyCode.Space))
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
@@ -73,7 +106,10 @@ public class MouseControls : MonoBehaviour
             float distance; // the distance from the ray origin to the ray intersection of the plane
             if(plane.Raycast(ray, out distance))
             {
-                heldObjectHeight += InputManager.GetAxis("Mouse ScrollWheel");
+                if (heldObjectHeight >= 0)
+                    heldObjectHeight += InputManager.GetAxis("Mouse ScrollWheel");
+                else
+                    heldObjectHeight = 0;
                 heldObject.transform.position = ray.GetPoint(distance) - camera.transform.forward * 1.3f + Vector3.up * heldObjectHeight; // distance along the ray
             }
 
