@@ -45,6 +45,7 @@ public class PuzzleChecker : MonoBehaviour
     void Awake()
     {
         currentScene = int.Parse(SceneManager.GetActiveScene().name);
+        pieces.AddRange(GameObject.FindObjectsOfType<Piece>());
     }
 
     public void CheckPuzzleComplete()
